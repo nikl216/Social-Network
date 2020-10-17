@@ -1,0 +1,10 @@
+{% extends "network/layout.html" %} {% block body %}
+
+<h2>Edit Post</h2>
+<form action="{% url 'edit' post.pk %}" method="post">
+    {% csrf_token %}
+  <textarea name="body" class="form-control col-6">{{post.body}}</textarea>
+  <button class="btn btn-primary" type="submit">Save</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "network/layout.html" %} {% block body %}
+
+<h2>{{user_profile.username}}</h2>
+<div class="row m-0">
+  <h6>Followers:</h6>
+  {{followers}}
+</div>
+<div class="row m-0">
+  <h6>Following:</h6>
+  {{following}}
+</div>
+{% if is_user is False %}
+<form action="{% url 'profile' user_profile.pk %}" method="post">
+  {% csrf_token %}
+   {% if is_following is False %}
+  <div class="row m-0">
+    <button name="follow" type="submit" class="btn btn-primary">Follow</button>
+  </div>
+  {% else %}
+  <div class="row m-0">
+    <button name="unfollow" type="submit" class="btn btn-primary">
+      Unfollow
+    </button>
+  </div>
+  {% endif %}
+</form>
+{% endif %}
+<h6>Posts:</h6>
+{% for post in posts %}
+<div class="card p-3 mt-3">
+  <div class="card-title">
+    <a href="{% url 'profile' post.created_by.pk %}"
+      ><h6>{{post.created_by.username}}</h6></a
+    >
+  </div>
+  <div class="card-body p-0">
+    {% if post.created_by == user %}
+    <a href="{% url 'edit' post.pk %}">Edit</a>
+    {% endif %}
+    <div>{{post.body}}</div>
+    <div class="text-secondary">{{post.timestamp}}</div>
+    <div class="text-secondary">Comment</div>
+    <div>&#10084; <span class="_{{post.pk}}">{{post.likes}}</span></div>
+    {% if user in post.liked_users.all %}
+    <div class="unlike{{post.pk}}"><button type="button" class="btn btn-outline-primary" id="unlike"  value="{{post.pk}}">Unike</button></div>
+    <div class="like{{post.pk}}" style="display:none;"><button type="button" class="btn btn-outline-primary" id="like" value="{{post.pk}}">Like</button></div>
+    {% else %}
+    <div class="like{{post.pk}}"><button type="button" class="btn btn-outline-primary" id="like" value="{{post.pk}}">Like</button></div>
+    <div class="unlike{{post.pk}}" style="display:none;"><button type="button" class="btn btn-outline-primary" id="unlike"  value="{{post.pk}}">Unlike</button></div>
+    {% endif %}
+  </div>
+</div>
+{% endfor %} {% endblock %}
